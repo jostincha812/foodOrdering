@@ -14,6 +14,9 @@ export default class Login extends Component {
 					<Button onPress={ () => this.props.navigation.navigate( 'Home' ) }>
 						<Text>Login</Text>
 					</Button>
+					<Button onPress={ () => this.props.navigation.navigate( 'SignUp' ) }>
+						<Text>SignUp</Text>
+					</Button>
 				</Content>
 			</Container>
 		)
