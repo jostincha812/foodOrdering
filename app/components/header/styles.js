@@ -1,10 +1,8 @@
 import { StyleSheet } from 'react-native';
-import colors from '../../constants/colors';
 
 const styles = StyleSheet.create({
   headerContainer : {
-    //flex : 1,
-    backgroundColor : colors.mainGreen
+    backgroundColor : 'blue'
   },
   headerLeft : {
     flex : 1

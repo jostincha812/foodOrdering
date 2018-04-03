@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Text } from 'native-base';
+import { Container, Content, Button ,Text } from 'native-base';
 
 export default class RestaurantList extends Component {
 	static navigationOptions = {
@@ -10,7 +10,9 @@ export default class RestaurantList extends Component {
 		return (
 			<Container>
 				<Content>
-					<Text>Restaurants</Text>
+					<Button onPress={ () => this.props.navigation.navigate('FoodMenu') }>
+						<Text>Restaurants</Text>
+					</Button>
 				</Content>
 			</Container>
 		)
