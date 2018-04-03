@@ -7,29 +7,30 @@ import FoodMenu from './screens/foodMenu';
 import AboutUs from './screens/aboutUs';
 import Cart from './screens/cart';
 
+const RestaurantRoute = StackNavigator ( 
+	{
+		RestaurantList : { screen : RestaurantList },
+		FoodMenu : { screen : FoodMenu }
+	}
+)
 
-export const Router = StackNavigator(
+const HomeRouter = TabNavigator (
+	{
+		Restaurants : { screen : RestaurantRoute },
+		Cart : { screen : Cart },
+		AboutUs : { screen : AboutUs }
+	},
+	{
+		order : [ 'AboutUs','Restaurants','Cart' ],
+		animationEnabled : false
+	}
+)
+
+const Router = StackNavigator(
 	{
 	  Login: { screen: Login },
 	  Home : { screen: HomeRouter },
 	}
 );
 
-const HomeRouter = TabNavigator (
-	{
-		Restaurants : RestaurantRoute,
-		Cart,
-		AboutUs
-	},
-	{
-		order : [ 'AboutUs','Restaurants','Cart' ],
-		animationEnabled : true
-	}
-)
-
-const RestaurantRoute = StackNavigator ( 
-	{
-		RestaurantList,
-		FoodMenu
-	}
-)
+export default Router;
