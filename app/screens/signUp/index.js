@@ -28,6 +28,8 @@ export default class SignUp extends Component {
 			mobile_no : '1234567890'
 		};
 		firebase.auth().createUserWithEmailAndPassword( signUpObj.email, signUpObj.password ).then( ( data ) => {
+			signUpObj.userId = data.toJSON().uid;
+			firebase.firestore().collection('users').add(signUpObj);
 			this.props.navigation.navigate( 'Home' );
 			}, err => {
 				console.log(' error :::::::: ', err.code );
