@@ -66,7 +66,6 @@ export default class Login extends Component {
 	}
 	
 	onRegister = () => {
-		console.log("HERE:::::");
 		if ( this.state.loading ) return;
 		this.props.navigation.navigate( 'SignUp' );
 	};
