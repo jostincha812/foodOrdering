@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Alert, View, Image, TextInput, TouchableOpacity, ActivityIndicator, StatusBar  } from 'react-native';
+import { Alert, View, Image, TouchableOpacity, ActivityIndicator, StatusBar  } from 'react-native';
 import { Container, Content, Button, Text } from 'native-base';
 import firebase from 'react-native-firebase';
 
 import { mainStyles,colors } from '../../theme';
 import styles from './styles';
 import logo from '../../assets/logo.png';
+import ProgressButton from '../../components/progressButton';
 import BottomButton from '../../components/bottomButton';
+import CustomTextInput from '../../components/customTextInput';
 
 
 const loginErrorMessages = {
@@ -79,51 +81,32 @@ export default class Login extends Component {
 			     backgroundColor={colors.themeWhite}
 			     barStyle="dark-content"
 			   />
-				<Content contentContainerStyle={mainStyles.publicBackground}>	
+				<Content contentContainerStyle={ {...mainStyles.publicBackground, flex : 1 } }>	
 					<Image
 						source={logo}
 						style={mainStyles.logoStyle}
 					/>
 					<Text style={mainStyles.appName}>Food App</Text>
-					
-					<View style={mainStyles.widthAll}>
-						<TextInput
-							keyboardType="email-address"
-							autoCapitalize="none"
-							value={this.state.email}
-							onChangeText={(email) => { this.setState( { email } ); }}
-							style={mainStyles.widthAll}
-							placeholder="Email"
-							placeholderTextColor={colors.red}
-							underlineColorAndroid={ colors.red }
-						/>
-						<Text style={mainStyles.errorText}>{ errors.email }</Text>
-					</View>
-					<View style={mainStyles.widthAll}>
-						<TextInput
-							value={this.state.password}
-							onChangeText={(password) => { this.setState( { password } ); }}
-							style={mainStyles.widthAll}
-							placeholder="Password"
-							placeholderTextColor={colors.red}
-							secureTextEntry
-							underlineColorAndroid={ colors.red }
-						/>
-						<Text style={mainStyles.errorText}>{ errors.password }</Text>
-					</View>
-					<View style={styles.loginContainer}>
-						{ !loading ? 
-								<TouchableOpacity 
-									onPress={ this.loginPressed } 
-									style={mainStyles.roundButton}
-									activeOpacity={0.8}
-								>
-										<Text style={mainStyles.whiteText}>Login</Text>
-								</TouchableOpacity>
-							:
-							<ActivityIndicator size="large" color={ colors.red } />
-					 }
-					</View>
+					<CustomTextInput 
+						type="email"
+						placeholder="Email"
+						value={ this.state.email }
+						onChange={ email => this.setState( { email } ) }
+						error={ errors.email }
+					/>
+					<CustomTextInput 
+						type="password"
+						placeholder="Password"
+						value={ this.state.password }
+						onChange={ password => this.setState( { password } ) }
+						error={ errors.password }
+					/>
+					<ProgressButton 
+						round
+						loading={ loading }
+						buttonText="Login"
+						onPress={ this.loginPressed } 
+					/>
 				</Content>
 				<BottomButton 
 					disabled={ loading }
