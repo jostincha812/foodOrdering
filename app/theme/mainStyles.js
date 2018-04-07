@@ -1,22 +1,15 @@
+import { Dimensions } from 'react-native';
 import colors from './colors';
 
-const buttonProps = {
-	width : '100%',
-	height : 40,
-	borderRadius : 5,
-	justifyContent : 'center',
-	alignItems : 'center',
-	marginVertical : 10
-}
+const { height: screenHeight } = Dimensions.get('window');
 
 const mainStyles = {
 	publicBackground : {
-		flex : 1,
 		alignItems : 'center',
 		justifyContent : 'center',
 		backgroundColor : colors.themeWhite,
-		height : '100%',
-		padding : '15%'
+		height : screenHeight,
+		paddingHorizontal : '15%'
 	},
 	logoStyle : {
 		width : 100,
@@ -29,11 +22,6 @@ const mainStyles = {
 	widthAll : {
 		width : '100%'
 	},
-	roundButton : {
-		...buttonProps,
-		borderRadius : 20,
-		backgroundColor : colors.red
-	},
 	whiteText : {
 		color : colors.white
 	},
@@ -44,7 +32,10 @@ const mainStyles = {
 		fontSize : 10,
 		color : colors.danger,
 		marginLeft : 5
-	}	
+	},
+	hidden : {
+		display : 'none'
+	}
 };
 
 export default mainStyles;

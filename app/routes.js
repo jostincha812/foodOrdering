@@ -30,7 +30,7 @@ const HomeRouter = TabNavigator (
 const Router = StackNavigator(
 	{
 	  Login: { screen: Login },
-	  SignUp: { screen: SignUp },
+		SignUp: { screen: SignUp },
 	  Home : { screen: HomeRouter },
 	}
 );
