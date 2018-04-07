@@ -1,9 +1,7 @@
 import colors from './colors';
 
-const inputWidth = '70%';
-
 const buttonProps = {
-	width : inputWidth,
+	width : '100%',
 	height : 40,
 	borderRadius : 5,
 	justifyContent : 'center',
@@ -17,7 +15,8 @@ const mainStyles = {
 		alignItems : 'center',
 		justifyContent : 'center',
 		backgroundColor : colors.themeWhite,
-		height : '100%'
+		height : '100%',
+		padding : '15%'
 	},
 	logoStyle : {
 		width : 100,
@@ -26,9 +25,6 @@ const mainStyles = {
 	appName : {
 		fontSize : 18,
 		marginBottom : 20
-	},
-	inputContainer : {
-		width : inputWidth
 	},
 	widthAll : {
 		width : '100%'
@@ -46,7 +42,7 @@ const mainStyles = {
 	},
 	errorText : {
 		fontSize : 10,
-		color : 'red',
+		color : colors.danger,
 		marginLeft : 5
 	}	
 };

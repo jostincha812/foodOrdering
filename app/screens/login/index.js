@@ -86,7 +86,7 @@ export default class Login extends Component {
 					/>
 					<Text style={mainStyles.appName}>Food App</Text>
 					
-					<View style={mainStyles.inputContainer}>
+					<View style={mainStyles.widthAll}>
 						<TextInput
 							keyboardType="email-address"
 							autoCapitalize="none"
@@ -99,7 +99,7 @@ export default class Login extends Component {
 						/>
 						<Text style={mainStyles.errorText}>{ errors.email }</Text>
 					</View>
-					<View style={mainStyles.inputContainer}>
+					<View style={mainStyles.widthAll}>
 						<TextInput
 							value={this.state.password}
 							onChangeText={(password) => { this.setState( { password } ); }}
@@ -124,12 +124,12 @@ export default class Login extends Component {
 							<ActivityIndicator size="large" color={ colors.red } />
 					 }
 					</View>
-					<BottomButton 
-						disabled={ loading }
-						onPress={ this.onRegister }
-						buttonText="Don't have an account yet?"
-					/>
 				</Content>
+				<BottomButton 
+					disabled={ loading }
+					onPress={ this.onRegister }
+					buttonText="Don't have an account yet?"
+				/>
 			</Container>
 		)
 	}
