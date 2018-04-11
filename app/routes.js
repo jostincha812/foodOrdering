@@ -11,28 +11,28 @@ import Cart from './screens/cart';
 const RestaurantRoute = StackNavigator ( 
 	{
 		RestaurantList : { screen : RestaurantList },
-		FoodMenu : { screen : FoodMenu }
+		FoodMenu : { screen : FoodMenu },
+		Cart : { screen : Cart },
 	}
 )
 
-const HomeRouter = TabNavigator (
+const PrivateRoutes = TabNavigator (
 	{
 		Restaurants : { screen : RestaurantRoute },
-		Cart : { screen : Cart },
 		AboutUs : { screen : AboutUs }
 	},
 	{
-		order : [ 'Restaurants','AboutUs','Cart' ],
+		tabBarPosition: 'bottom',
+		order : [ 'Restaurants', 'AboutUs' ],
 		animationEnabled : false
 	}
 )
 
-const Router = StackNavigator(
+const PublicRoutes = StackNavigator(
 	{
 	  Login: { screen: Login },
 		SignUp: { screen: SignUp },
-	  Home : { screen: HomeRouter },
 	}
 );
 
-export default Router;
+export { PublicRoutes, PrivateRoutes };

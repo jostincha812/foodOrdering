@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native';
-import Routes from './app/routes';
+import App from './app/App';
 
-AppRegistry.registerComponent('foodOrderingApp', () => Routes);
+AppRegistry.registerComponent('foodOrderingApp', () => App);
