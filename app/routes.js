@@ -22,7 +22,7 @@ const HomeRouter = TabNavigator (
 		AboutUs : { screen : AboutUs }
 	},
 	{
-		order : [ 'AboutUs','Restaurants','Cart' ],
+		order : [ 'Restaurants','AboutUs','Cart' ],
 		animationEnabled : false
 	}
 )
