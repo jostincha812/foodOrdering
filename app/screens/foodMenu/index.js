@@ -8,7 +8,7 @@ import CustomList from '../../components/customList';
 export default class FoodMenu extends Component {
 	static navigationOptions = {
 		header : null,
-		gesturesEnabled:false
+		drawerLockMode: 'locked-closed'
 	}
 	
 	state = {

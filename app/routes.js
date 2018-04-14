@@ -24,10 +24,7 @@ const PrivateRoutes = DrawerNavigator (
 		AboutUs : { screen : AboutUs }
 	},
 	{
-	  contentComponent : CustomDrawer,
-		navigationOptions : {
-			drawerLockMode: 'locked-closed'
-		}
+	  contentComponent : CustomDrawer
 	} 
 )
 
