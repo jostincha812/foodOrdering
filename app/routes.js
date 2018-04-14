@@ -1,12 +1,14 @@
 import React from "react";
-import { StackNavigator, TabNavigator } from "react-navigation";
-
+import { StackNavigator, DrawerNavigator, SwitchNavigator } from "react-navigation";
+// screens
 import Login from './screens/login';
 import SignUp from './screens/signUp';
 import RestaurantList from './screens/restaurantList';
 import FoodMenu from './screens/foodMenu';
 import AboutUs from './screens/aboutUs';
 import Cart from './screens/cart';
+// components
+import CustomDrawer from './components/customDrawer';
 
 const RestaurantRoute = StackNavigator ( 
 	{
@@ -16,16 +18,17 @@ const RestaurantRoute = StackNavigator (
 	}
 )
 
-const PrivateRoutes = TabNavigator (
+const PrivateRoutes = DrawerNavigator (
 	{
 		Restaurants : { screen : RestaurantRoute },
 		AboutUs : { screen : AboutUs }
 	},
 	{
-		tabBarPosition: 'bottom',
-		order : [ 'Restaurants', 'AboutUs' ],
-		animationEnabled : false
-	}
+	  contentComponent : CustomDrawer,
+		navigationOptions : {
+			drawerLockMode: 'locked-closed'
+		}
+	} 
 )
 
 const PublicRoutes = StackNavigator(

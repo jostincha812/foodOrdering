@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { Container, Content, Button ,Text } from 'native-base';
 import firebase from 'react-native-firebase';
 
+import NavBar from '../../components/navBar';
+
 export default class RestaurantList extends Component {
 	static navigationOptions = {
 		header : null,
-		gesturesEnabled:false
+		gesturesEnabled:false,
 	}
 
 	state = {
@@ -41,6 +43,11 @@ export default class RestaurantList extends Component {
 	render() {
 		return (
 			<Container>
+				<NavBar
+					leftIcon="menu"
+					leftIconPress={ () => this.props.navigation.navigate('DrawerOpen') }
+					title="Restaurants"
+				/>
 				<Content>
 					<Button onPress={ () => this.props.navigation.navigate('FoodMenu') }>
 						<Text>Restaurants</Text>

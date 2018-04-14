@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { Alert, Image, View, TouchableOpacity, Dimensions, Keyboard } from 'react-native';
-import { Container, Content, Text } from 'native-base';
+import { Container, Content, Text, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 
 import { mainStyles,colors } from '../../theme';
 import styles from './styles';
 import logo from '../../assets/logo.png';
-import closeIcon from '../../assets/close-icon.png';
-import backIcon from '../../assets/back-icon.png';
 import PersonalDetails from './components/personalDetails';
 import AddressDetails from './components/addressDetails';
 
@@ -89,9 +87,8 @@ export default class SignUp extends Component {
 						style={ styles.closeButtonContainer } 
 						activeOpacity={ this.state.loading ? 1 : 0.2 }
 						onPress={ this.onClose }>
-						<Image 
-							source={ this.state.showPersonalDetails ? closeIcon : backIcon }
-							style={ this.state.showPersonalDetails ? styles.closeButton : styles.backButton }
+						<Icon 
+							name={ this.state.showPersonalDetails ? 'close' : 'ios-arrow-back' }
 						/>
 					</TouchableOpacity>
 						<Image
