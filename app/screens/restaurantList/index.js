@@ -58,9 +58,10 @@ export default class RestaurantList extends Component {
 											restaurantId : item.Id,
 											name : item.name
 										}) 
-									}}
-					 style={ styles.itemContainerStyle }
-					 >
+					}}
+					activeOpacity={ 0.8 }
+					style={ styles.itemContainerStyle }
+				>
 					<View style={ styles.restaurantNameContainer }>
 						<Text style={ styles.restaurantName }>{ item.name }</Text>
 					</View>

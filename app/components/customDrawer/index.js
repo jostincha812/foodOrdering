@@ -11,6 +11,8 @@ import styles from './style';
 import { colors } from '../../theme';
 import logo from '../../assets/logo.png';
 
+import { addSpaceBeforeCapital } from '../../utils';
+
 
 class CustomDrawer extends Component {
   
@@ -42,7 +44,7 @@ class CustomDrawer extends Component {
         style={ nav.key === activeItemKey ? styles.listActiveItemContainer : styles.listItemContainer } 
         key={ nav.key }
       >
-        <Text style={ styles.navText }>{nav.routeName}</Text>
+        <Text style={ styles.navText }>{ addSpaceBeforeCapital( nav.routeName ) }</Text>
       </TouchableHighlight>
     ) )
   }
