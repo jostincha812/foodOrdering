@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Content, Button ,Text } from 'native-base';
+import { RefreshControl, Image, View, Text, TouchableOpacity } from 'react-native';
+import { Container, Content , Card, CardItem, ListItem } from 'native-base';
 import firebase from 'react-native-firebase';
 
 import NavBar from '../../components/navBar';
+import CustomList from '../../components/customList';
+import styles from './styles';
+import { mainStyles } from '../../theme';
+
+import placeholder from '../../assets/placeholder.png';
 
 export default class RestaurantList extends Component {
 	static navigationOptions = {
@@ -12,15 +18,19 @@ export default class RestaurantList extends Component {
 
 	state = {
 		data    : [],
-		loading : false
+		loading : false,
+		isRefreshing : false
 	}
 
 	componentDidMount () {
 		this.fetchRestaurants();
 	}
 
-	fetchRestaurants = () => {
-		this.setState( { loading : true } );
+	fetchRestaurants = ( isRefreshing ) => {
+		this.setState( { 
+			loading : isRefreshing ? false : true,
+			isRefreshing : isRefreshing || false
+		 } );
 		firebase.firestore().collection('restaurants').onSnapshot((documentSnapshot) => {
 			let resultData = [];
 			documentSnapshot.forEach((doc) => {
@@ -29,7 +39,7 @@ export default class RestaurantList extends Component {
 				resultData.push(data);
 			});
 			console.log('resultData ::::::: ', resultData);
-			this.setState( { data : resultData, loading : false } );
+			this.setState( { data : resultData, loading : false, isRefreshing : false } );
 		}, err => {
 			this.setState( { loading : false } );
 			Alert.alert('Restaurants','Oops.. Something went wrong, Please try again',
@@ -39,8 +49,35 @@ export default class RestaurantList extends Component {
 			);
 		});
 	}
+	
+	getRestaurant = ( item ) => {
+			return (
+				<TouchableOpacity
+					onPress={ () => { 
+										this.props.navigation.navigate('FoodMenu',{
+											restaurantId : item.Id,
+											name : item.name
+										}) 
+									}}
+					 style={ styles.itemContainerStyle }
+					 >
+					<View style={ styles.restaurantNameContainer }>
+						<Text style={ styles.restaurantName }>{ item.name }</Text>
+					</View>
+					<Image
+						defaultSource={ placeholder }
+						source={ item.image ? { uri : item.image} : placeholder }
+						style={ styles.restaurantImageStyle }
+					/>
+					<View style={ styles.addressContainer } >
+						<Text style={ styles.addressText }>{item.address}</Text>
+					</View>
+				</TouchableOpacity>
+			)
+	}
 
 	render() {
+		const { loading, isRefreshing, data } = this.state;
 		return (
 			<Container>
 				<NavBar
@@ -48,10 +85,19 @@ export default class RestaurantList extends Component {
 					leftIconPress={ () => this.props.navigation.navigate('DrawerOpen') }
 					title="Restaurants"
 				/>
-				<Content>
-					<Button onPress={ () => this.props.navigation.navigate('FoodMenu') }>
-						<Text>Restaurants</Text>
-					</Button>
+				<Content 
+					refreshControl={
+						<RefreshControl
+							refreshing={ isRefreshing }
+							onRefresh={ () => { this.fetchRestaurants( true ) } }
+						/>
+					}
+				>
+					<CustomList 
+						loading={ loading }
+						data={ data }
+						renderRow={ this.getRestaurant }
+					/>
 				</Content>
 			</Container>
 		)

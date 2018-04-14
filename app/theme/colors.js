@@ -8,5 +8,6 @@ export default {
   // =====================
   white : '#FFFFFF',
   grey : '#CFCFCF',
-  danger : 'red'
+  danger : 'red',
+  noRecords : '#b7b7b7'
 }
