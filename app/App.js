@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Text, AsyncStorage } from 'react-native';
 import firebase from 'react-native-firebase';
-import { AsyncStorage } from 'react-native';
 
 import { PublicRoutes, PrivateRoutes } from './routes';
 import SplashScreen from './components/splashscreen';

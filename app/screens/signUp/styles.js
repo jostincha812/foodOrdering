@@ -10,14 +10,6 @@ const styles = StyleSheet.create({
     width : 25,
     alignItems : 'center',
     justifyContent : 'center',
-  },
-  closeButton : {
-    height : 15,
-    width : 15,
-  },
-  backButton : {
-    height : 25,
-    width : 25
   }
 });
 
