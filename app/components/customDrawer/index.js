@@ -13,7 +13,6 @@ import logo from '../../assets/logo.png';
 
 import { addSpaceBeforeCapital } from '../../utils';
 
-
 class CustomDrawer extends Component {
   
   logout = () => {
