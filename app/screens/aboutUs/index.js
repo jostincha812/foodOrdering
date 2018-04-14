@@ -14,7 +14,7 @@ export default class AboutUs extends Component {
 				<NavBar
 					leftIcon="menu"
 					leftIconPress={ () => this.props.navigation.navigate('DrawerOpen') }
-					title="Restaurants"
+					title="About Us"
 				/>
 				<Content>
 					<Text>AboutUs</Text>
