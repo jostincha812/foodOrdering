@@ -5,8 +5,10 @@ import firebase from 'react-native-firebase';
 
 import NavBar from '../../components/navBar';
 import CustomList from '../../components/customList';
+import SearchBar from '../../components/searchBar';
 import styles from './styles';
 import { mainStyles } from '../../theme';
+import { makeCopy } from '../../utils';
 
 import placeholder from '../../assets/placeholder.png';
 
@@ -17,6 +19,7 @@ export default class RestaurantList extends Component {
 	}
 
 	state = {
+		rawData : [],
 		data    : [],
 		loading : false,
 		isRefreshing : false
@@ -39,7 +42,12 @@ export default class RestaurantList extends Component {
 				resultData.push(data);
 			});
 			console.log('resultData ::::::: ', resultData);
-			this.setState( { data : resultData, loading : false, isRefreshing : false } );
+			this.setState( { 
+				rawData : resultData,
+				data : resultData, 
+				loading : false, 
+				isRefreshing : false
+			 } );
 		}, err => {
 			this.setState( { loading : false } );
 			Alert.alert('Restaurants','Oops.. Something went wrong, Please try again',
@@ -48,6 +56,19 @@ export default class RestaurantList extends Component {
 				]
 			);
 		});
+	}
+	
+	onSearch = ( search_text ) => {
+		const { rawData } = this.state;
+		
+		if ( !search_text ) {
+			this.setState( { data : makeCopy( rawData ) } );
+			return;
+		}
+		
+		const data = makeCopy( rawData ).filter( restaurant => restaurant.name.toLowerCase().match( search_text.toLowerCase() ) );
+		
+		this.setState( { data } );
 	}
 	
 	getRestaurant = ( item ) => {
@@ -86,7 +107,10 @@ export default class RestaurantList extends Component {
 					leftIconPress={ () => this.props.navigation.navigate('DrawerOpen') }
 					title="Restaurants"
 				/>
-				<Content 
+				<SearchBar 
+					onSearch={ this.onSearch }
+				/>
+				<Content
 					refreshControl={
 						<RefreshControl
 							refreshing={ isRefreshing }
