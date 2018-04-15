@@ -40,9 +40,6 @@ const mainStyles = {
 		alignItems : 'center',
 		justifyContent : 'center',
 		height : screenHeight/1.2
-	},
-	mainBackground : {
-		backgroundColor : colors.themeWhite,
 	}
 };
 
