@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { RefreshControl, Alert } from 'react-native';
-import { Container, Content, Text } from 'native-base';
+import { RefreshControl, Alert, Image, View, Text, TouchableOpacity, Linking, AsyncStorage } from 'react-native';
+import { Container, Content, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 
 import NavBar from '../../components/navBar';
 import CustomList from '../../components/customList';
+import AddToCartButton from '../../components/addToCartButton';
+import BottomButton from '../../components/bottomButton';
+import styles from './styles';
+
+import placeholder from '../../assets/placeholder.png';
 
 export default class FoodMenu extends Component {
 	static navigationOptions = {
@@ -15,28 +20,35 @@ export default class FoodMenu extends Component {
 	state = {
 		loading : false,
 		isRefreshing : false,
-		data : []
+		restaurantData : {},
+		data : [],
+		showCart : false
 	};
 
 	componentDidMount () {
-		this.fetchMenu();
+		const { navigation : { state : { params : { restaurantData } } } } = this.props;
+		AsyncStorage.removeItem( 'cartData' );
+		this.setState({
+			restaurantData : { ...restaurantData }
+		}, this.fetchMenu );
 	}
 		
 	fetchMenu = ( isRefreshing ) => {
+		const { restaurantData } = this.state;
+		
 		this.setState( { 
 			loading : isRefreshing ? false : true,
 			isRefreshing : isRefreshing || false
 		 } );
-
-		const { navigation : { state : { params : { restaurantId } } } } = this.props;
-		 firebase.firestore().collection(`restaurants/${restaurantId}/foodMenu`).onSnapshot((documentSnapshot) => {
+		 
+		 firebase.firestore().collection(`restaurants/${restaurantData.Id}/foodMenu`).onSnapshot((documentSnapshot) => {
 			let resultData = [];
 			documentSnapshot.forEach((doc) => {
 				let data = doc.data();
 				data.Id = doc.id;
 				resultData.push(data);
 			});
-			console.log('resultData ::::::: ', resultData);
+
 			this.setState( { 
 				rawData : resultData,
 				data : resultData, 
@@ -55,11 +67,28 @@ export default class FoodMenu extends Component {
 	}
 	
 	getMenu = ( item ) => {
-		return <Text>Item</Text>
+		return(
+			<View style={ styles.foodContainer }>
+				<Image
+					source={ item.image ? { uri : item.image } : placeholder }
+					style={ styles.foodImage }
+				/>
+				<View style={ styles.foodDetailsContainer }>
+					<Text style={ styles.foodName }>{item.name}</Text>
+					<Text style={ styles.rateText }>SAR { item.rate }</Text>
+				</View>
+				<View style={ styles.addToCartContainer}>
+					<AddToCartButton 
+						foodData={ item }
+						showCart={ showCart => { this.setState( { showCart } ) }}
+					/>
+				</View>
+			</View>
+		)
 	}
 	
 	render() {
-		const { loading, isRefreshing, data } = this.state;
+		const { loading, isRefreshing, data, restaurantData, showCart } = this.state;
 		
 		return (
 			<Container>
@@ -76,12 +105,38 @@ export default class FoodMenu extends Component {
 						/>
 					}
 				>
+					<View style={ styles.restaurantContainer } >
+						<Image
+							defaultSource={ placeholder }
+							source={ restaurantData.image ? { uri : restaurantData.image } : placeholder }
+							style={ styles.restaurantImageStyle }
+						/>
+						<View style={ styles.textContainer }/>
+						<Text style={ styles.restaurantName }>{ restaurantData.name }</Text>
+						{ restaurantData.phone ? 
+							<TouchableOpacity 
+								onPress={ () => { Linking.openURL(`tel:${restaurantData.phone}`); } } 
+								style={ styles.phoneContainer } 
+							>
+								<Icon name="call" style={ styles.phoneIcon } />	
+							</TouchableOpacity>
+						 : <View style={ styles.phoneContainer }/>
+					 }
+					</View>
 					<CustomList 
 						loading={ loading }
 						data={ data }
 						renderRow={ this.getMenu }
 					/>
 				</Content>
+				{
+					showCart ?
+					<BottomButton
+					buttonText="Go to cart"
+					onPress={ () => { console.log("CART:::");} }
+				/>
+				: <View/>
+			}
 			</Container>
 		)
 	}
