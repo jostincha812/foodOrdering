@@ -76,8 +76,7 @@ export default class RestaurantList extends Component {
 				<TouchableOpacity
 					onPress={ () => { 
 										this.props.navigation.navigate('FoodMenu',{
-											restaurantId : item.Id,
-											name : item.name
+											restaurantData : item
 										}) 
 					}}
 					activeOpacity={ 0.8 }
