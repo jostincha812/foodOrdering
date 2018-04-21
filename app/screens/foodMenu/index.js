@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { RefreshControl, Alert, Image, View, Text, TouchableOpacity, Linking, AsyncStorage } from 'react-native';
+import { RefreshControl, Alert, Image, View, Text, TouchableOpacity, Linking } from 'react-native';
 import { Container, Content, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 
@@ -22,12 +22,13 @@ export default class FoodMenu extends Component {
 		isRefreshing : false,
 		restaurantData : {},
 		data : [],
+		cartData : [],
 		showCart : false
 	};
 
 	componentDidMount () {
 		const { navigation : { state : { params : { restaurantData } } } } = this.props;
-		AsyncStorage.removeItem( 'cartData' );
+
 		this.setState({
 			restaurantData : { ...restaurantData }
 		}, this.fetchMenu );
@@ -66,6 +67,29 @@ export default class FoodMenu extends Component {
 
 	}
 	
+	setCardData = ( foodObj ) => {
+		const { cartData } = this.state;
+		const { qty } = foodObj;
+		
+		if ( qty ) {
+			const isAdded = cartData.findIndex( food => food.Id === foodObj.Id );
+			
+			if ( isAdded !== -1 ) {
+				cartData[ isAdded ] = foodObj;
+			} else {
+				cartData.push( foodObj );
+			}
+			
+			this.setState( { cartData } );
+
+		} else {
+			const newCartData = cartData.filter( food => food.Id !== foodObj.Id );
+			
+			this.setState( { cartData: newCartData } )
+		}
+		console.log("FOOD OBJ::",foodObj);
+	}
+	
 	getMenu = ( item ) => {
 		return(
 			<View style={ styles.foodContainer }>
@@ -80,15 +104,19 @@ export default class FoodMenu extends Component {
 				<View style={ styles.addToCartContainer}>
 					<AddToCartButton 
 						foodData={ item }
-						showCart={ showCart => { this.setState( { showCart } ) }}
+						addToCart={ this.setCardData }
 					/>
 				</View>
 			</View>
 		)
 	}
 	
+	toggleCart = ( showCart ) => {
+		this.setState( { showCart } )
+	}
+	
 	render() {
-		const { loading, isRefreshing, data, restaurantData, showCart } = this.state;
+		const { loading, isRefreshing, data, restaurantData, cartData } = this.state;
 		
 		return (
 			<Container>
@@ -130,10 +158,10 @@ export default class FoodMenu extends Component {
 					/>
 				</Content>
 				{
-					showCart ?
+					cartData.length ?
 					<BottomButton
 					buttonText="Go to cart"
-					onPress={ () => { console.log("CART:::");} }
+					onPress={ () => { this.toggleCart( true ); } }
 				/>
 				: <View/>
 			}
