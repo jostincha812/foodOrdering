@@ -41,7 +41,7 @@ export default class RestaurantList extends Component {
 				data.Id = doc.id;
 				resultData.push(data);
 			});
-			console.log('resultData ::::::: ', resultData);
+
 			this.setState( { 
 				rawData : resultData,
 				data : resultData, 

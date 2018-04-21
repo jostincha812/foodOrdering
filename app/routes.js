@@ -6,7 +6,6 @@ import SignUp from './screens/signUp';
 import RestaurantList from './screens/restaurantList';
 import FoodMenu from './screens/foodMenu';
 import AboutUs from './screens/aboutUs';
-import Cart from './screens/cart';
 // components
 import CustomDrawer from './components/customDrawer';
 
@@ -14,7 +13,6 @@ const RestaurantRoute = StackNavigator (
 	{
 		RestaurantList : { screen : RestaurantList },
 		FoodMenu : { screen : FoodMenu },
-		Cart : { screen : Cart },
 	}
 )
 

@@ -7,8 +7,10 @@ import NavBar from '../../components/navBar';
 import CustomList from '../../components/customList';
 import AddToCartButton from '../../components/addToCartButton';
 import BottomButton from '../../components/bottomButton';
-import styles from './styles';
+import CartModal from '../../components/cartModal';
 
+import styles from './styles';
+import { mainStyles } from '../../theme';
 import placeholder from '../../assets/placeholder.png';
 
 export default class FoodMenu extends Component {
@@ -23,7 +25,8 @@ export default class FoodMenu extends Component {
 		restaurantData : {},
 		data : [],
 		cartData : [],
-		showCart : false
+		showCart : false,
+		total : 0
 	};
 
 	componentDidMount () {
@@ -80,14 +83,24 @@ export default class FoodMenu extends Component {
 				cartData.push( foodObj );
 			}
 			
-			this.setState( { cartData } );
+			this.setState( { cartData }, this.setTotal );
 
 		} else {
 			const newCartData = cartData.filter( food => food.Id !== foodObj.Id );
 			
-			this.setState( { cartData: newCartData } )
+			this.setState( { cartData: newCartData }, this.setTotal )
 		}
-		console.log("FOOD OBJ::",foodObj);
+	}
+	
+	setTotal = ( ) => {
+		const { cartData } = this.state;
+		
+		const total = cartData.reduce( ( total, food ) => {
+			total = total + ( food.qty * food.rate );
+			return total;
+		}, 0 )
+		
+		this.setState( { total : total.toFixed( 2 ) } );
 	}
 	
 	getMenu = ( item ) => {
@@ -112,12 +125,12 @@ export default class FoodMenu extends Component {
 	}
 	
 	toggleCart = ( showCart ) => {
-		this.setState( { showCart } )
+		this.setState( { showCart } );
 	}
 	
 	render() {
-		const { loading, isRefreshing, data, restaurantData, cartData } = this.state;
-		
+		const { loading, isRefreshing, data, restaurantData, cartData, showCart, total } = this.state;
+				
 		return (
 			<Container>
 				<NavBar
@@ -156,15 +169,24 @@ export default class FoodMenu extends Component {
 						data={ data }
 						renderRow={ this.getMenu }
 					/>
+					<View style={ cartData.length ? mainStyles.handleBottomButton : {}}/>
 				</Content>
 				{
 					cartData.length ?
 					<BottomButton
-					buttonText="Go to cart"
-					onPress={ () => { this.toggleCart( true ); } }
-				/>
-				: <View/>
-			}
+						buttonText={ `Go to Cart ( SAR ${total} )` }
+						onPress={ () => { this.toggleCart( true ); } }
+					/>
+					: <View/>
+				}
+			<CartModal 
+				showCart={ showCart }
+				toggleCart={ this.toggleCart }
+				cartData={ cartData }
+				total={ total }
+				restaurantData={ restaurantData }
+				navigation={ this.props.navigation }
+			/>
 			</Container>
 		)
 	}

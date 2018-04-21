@@ -9,5 +9,6 @@ export default {
   white : '#FFFFFF',
   grey : '#CFCFCF',
   danger : 'red',
-  noRecords : '#b7b7b7'
+  noRecords : '#b7b7b7',
+  success : '#28a745'
 }
