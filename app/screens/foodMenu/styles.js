@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     position : 'absolute',
     bottom : 8,
     left : 18,
+    width : '70%',
     elevation : 1
   },
   textContainer : {

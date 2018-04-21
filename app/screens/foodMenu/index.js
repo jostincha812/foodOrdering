@@ -153,7 +153,7 @@ export default class FoodMenu extends Component {
 							style={ styles.restaurantImageStyle }
 						/>
 						<View style={ styles.textContainer }/>
-						<Text style={ styles.restaurantName }>{ restaurantData.name }</Text>
+						<Text style={ styles.restaurantName } numberOfLines={ 1 }>{ restaurantData.name }</Text>
 						{ restaurantData.phone ? 
 							<TouchableOpacity 
 								onPress={ () => { Linking.openURL(`tel:${restaurantData.phone}`); } } 
