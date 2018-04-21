@@ -40,6 +40,9 @@ const mainStyles = {
 		alignItems : 'center',
 		justifyContent : 'center',
 		height : screenHeight/1.2
+	},
+	handleBottomButton : {
+		marginBottom : 40
 	}
 };
 
