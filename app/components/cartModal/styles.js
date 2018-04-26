@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   totalContainer : {
     width : '100%',
-    paddingVertical : 20,
+    paddingTop : 20,
     paddingHorizontal : 10,
     alignItems : 'flex-end',
     ...mainStyles.handleBottomButton
@@ -102,6 +102,16 @@ const styles = StyleSheet.create({
   },
   publicBackground : {
     flex : 1,
+    justifyContent : 'center',
+    alignItems : 'center'
+  },
+  addressContainer : {
+    paddingHorizontal : 10,
+    paddingBottom : 20
+  },
+  loader : {
+    flex : 1,
+    flexDirection : 'column',
     justifyContent : 'center',
     alignItems : 'center'
   }
