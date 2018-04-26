@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableHighlight,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
@@ -16,12 +17,19 @@ import { addSpaceBeforeCapital } from '../../utils';
 class CustomDrawer extends Component {
   
   logout = () => {
-    firebase.auth().signOut()
-      .then(data => {
-      })
-      .catch(err => {
-        console.log("ERR::",err)
-      })
+    Alert.alert('Logout','Are you sure you want to log out?',
+        [
+          { text : 'Cancel' },
+          { text : 'OK', onPress: () => {
+            firebase.auth().signOut()
+            .then(data => {
+            })
+            .catch(err => {
+              console.log("Logout auth error:",err)
+            })
+          } }
+        ]
+      );
   };
   
   replaceScreen = ( routeName ) => {
@@ -65,8 +73,8 @@ class CustomDrawer extends Component {
         </View>
         { this.getMenuItems() }
         <TouchableHighlight
-          underlayColor={ colors.darkRed }
-          activeOpacity={ 0.5 }
+          underlayColor="transparent"
+          //activeOpacity={ 0.5 }
           onPress={ this.logout } 
           style={ styles.listItemContainer }
         >
