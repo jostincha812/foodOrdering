@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, View, Text, Image, Alert, AsyncStorage } from 'react-native';
+import { Modal, View, Text, Image, Alert, AsyncStorage, TouchableOpacity, Keyboard } from 'react-native';
 import { Container, Content, Icon, Spinner } from 'native-base';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'react-native-firebase';
@@ -8,6 +8,7 @@ import NavBar from '../navBar';
 import BottomButton from '../bottomButton';
 import CustomList from '../customList';
 import CustomTextInput from '../customTextInput';
+import ProgressButton from '../progressButton';
 
 import styles from './styles';
 import placeholder from '../../assets/placeholder.png';
@@ -23,7 +24,20 @@ export default class CartModal extends Component {
     deliveryAddress : '',
     userId : '',
     mobile : '',
-    loading : false
+    loading : false,
+    showAddressEditor : false
+  }
+  
+  componentWillMount() {
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+  
+  _keyboardDidHide = () => {
+    this.setState( { showAddressEditor : false } );
+  }
+  
+  componentWillUnmount () {
+    this.keyboardDidHideListener.remove();
   }
   
   onCheckout = () => {
@@ -110,13 +124,16 @@ export default class CartModal extends Component {
   }
   
   handleBackPress = ( ) => {
-    const { orderPlaced } = this.state;
+    const { orderPlaced, loading } = this.state;
     
-    if ( orderPlaced ) 
+    if ( loading )
+      return;
+    
+    else if ( orderPlaced ) 
       this.goToRestaurants();
 
     else
-    this.props.toggleCart( false );
+      this.props.toggleCart( false );
   }
   
   goToRestaurants = () => { this.props.navigation.dispatch(NavigationActions.reset({
@@ -142,6 +159,44 @@ export default class CartModal extends Component {
     </View>
   )
   
+  addressComponent = () => {
+    const { deliveryAddress , showAddressEditor } = this.state;
+    
+    if ( showAddressEditor ) {
+      return (
+        <CustomTextInput
+          autoFocus={ true }
+          placeholder="Enter your delivery address"
+          value={ deliveryAddress }
+          onChange={ deliveryAddress => this.setState( { deliveryAddress } ) }
+          returnKeyType="done"
+          onSubmitEditing={ () => { this.setState({ showAddressEditor : false }); } } 
+        />
+      )
+    }
+    
+    return (
+      <TouchableOpacity 
+        style={ styles.addressContainer }
+        onPress={ () => { 
+          this.setState( { showAddressEditor : true } );
+         } }
+        >
+        {
+          deliveryAddress ? 
+          <Text style={ styles.addressText } numberOfLines={ 1 }>
+            { deliveryAddress }
+          </Text>
+          :
+          <Text>Enter your delivery address</Text>
+      }
+        <View style={ styles.editAddressContainer }>
+          <Icon name="md-create" style={ styles.editAddressIcon }/>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+  
   renderCart () {
     const { cartData, total, restaurantData } = this.props;
     
@@ -159,6 +214,8 @@ export default class CartModal extends Component {
               style={ styles.restaurantImage }
             />
             <Text style={ styles.restaurantHeader } >{ restaurantData.name }</Text>
+            <Text style={ styles.toText }>To</Text>
+            { this.addressComponent() }
           </View>
           <View style={ styles.yourOrderContainer }>
             <Text style={ styles.yourOrderText }>Your Orders</Text>
@@ -180,13 +237,6 @@ export default class CartModal extends Component {
           <View style={ styles.totalContainer}>
             <Text style={styles.leftText}>Total</Text>
             <Text style={ styles.totalText } >SAR { parseFloat( total ) + DELIVERY_FEE }</Text>
-          </View>
-          <View style={ styles.addressContainer}>
-            <CustomTextInput 
-              placeholder="Enter your delivery address"
-              value={ this.state.deliveryAddress }
-              onChange={ val => this.setState({ deliveryAddress : val }) }
-            />
           </View>
         </Content>
         <BottomButton

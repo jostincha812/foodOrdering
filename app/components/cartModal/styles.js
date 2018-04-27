@@ -105,15 +105,34 @@ const styles = StyleSheet.create({
     justifyContent : 'center',
     alignItems : 'center'
   },
-  addressContainer : {
-    paddingHorizontal : 10,
-    paddingBottom : 20
-  },
   loader : {
     flex : 1,
     flexDirection : 'column',
     justifyContent : 'center',
     alignItems : 'center'
+  },
+  toText : {
+    margin : 10
+  },
+  addressContainer : {
+    flexDirection : 'row',
+    justifyContent : 'center',
+    alignItems : 'center',
+    paddingHorizontal : 10
+  },
+  editAddressContainer : {
+    marginLeft : 5
+  },
+  editAddressText : {
+    color : colors.red
+  },
+  editAddressIcon : {
+    fontSize : 20,
+    color : colors.red
+  },
+  addressText : {
+    color : colors.black,
+    textAlign : 'center'
   }
 });
 
