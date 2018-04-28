@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, View, Text, Image, Alert, AsyncStorage, TouchableOpacity, Keyboard } from 'react-native';
+import { Modal, View, Text, Image, Alert, TouchableOpacity, Keyboard } from 'react-native';
 import { Container, Content, Icon, Spinner } from 'native-base';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'react-native-firebase';
@@ -22,14 +22,18 @@ export default class CartModal extends Component {
   state = {
     orderPlaced : false,
     deliveryAddress : '',
-    userId : '',
-    mobile : '',
     loading : false,
     showAddressEditor : false
-  }
+  };
   
   componentWillMount() {
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+
+  componentWillReceiveProps ( { address }) {
+    const lastProps = this.props;
+    if( lastProps.address !== address )
+      this.setState({ deliveryAddress : address });
   }
   
   _keyboardDidHide = () => {
@@ -49,42 +53,13 @@ export default class CartModal extends Component {
         ]
       );
     }
-    else this.getUserId();
-  }
-
-  getUserId = () => {
-    this.setState({ loading : true }, () => {
-      AsyncStorage.getItem("uid")
-      .then((value) => {
-        this.setState( { userId : value } , () => {
-          this.getUserPhoneNo();
-        } );
-      })
-      .catch(err => {
-        console.log('AsyncStorage get userId error :: ', err);
-        this.someThingWentWrong();
-      });
-    });
-  }
-
-  getUserPhoneNo = () => {
-    const { userId } = this.state;
-    firebase.firestore().collection('users').where( 'userId' , '==' , userId ).get().then((documentSnapshot) => {
-      documentSnapshot.forEach((doc) => {
-        let data = doc.data();
-        this.setState( { mobile : data.mobile_no }, () => {
-          this.placeOrder();
-        } );
-      });
-    }, err => {
-      console.log('user details get error :: ', err);
-      this.someThingWentWrong();
-    });
+    else this.placeOrder();
   }
 
   placeOrder = () => {
-     const { deliveryAddress, userId, mobile } = this.state;
-     const { cartData, total, restaurantData : { Id } } = this.props;
+     const { deliveryAddress } = this.state;
+     this.setState( { loading : true } );
+     const { cartData, total, restaurantData : { Id }, userId, mobile } = this.props;
      const objToSend = {
        userId,
        mobile,
