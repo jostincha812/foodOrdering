@@ -13,6 +13,7 @@ import ProgressButton from '../progressButton';
 import styles from './styles';
 import placeholder from '../../assets/placeholder.png';
 import { colors } from '../../theme';
+import { checkInternetConnection } from '../../utils';
 
 
 const DELIVERY_FEE = 10;
@@ -57,6 +58,10 @@ export default class CartModal extends Component {
   }
 
   placeOrder = () => {
+    checkInternetConnection( this.placeOrderFirebaseCall, this.placeOrder );
+  }
+
+  placeOrderFirebaseCall = () => {
      const { deliveryAddress } = this.state;
      this.setState( { loading : true } );
      const { cartData, total, restaurantData : { Id }, userId, mobile } = this.props;

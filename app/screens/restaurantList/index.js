@@ -8,7 +8,7 @@ import CustomList from '../../components/customList';
 import SearchBar from '../../components/searchBar';
 import styles from './styles';
 import { mainStyles } from '../../theme';
-import { makeCopy } from '../../utils';
+import { makeCopy, checkInternetConnection } from '../../utils';
 
 import placeholder from '../../assets/placeholder.png';
 
@@ -29,10 +29,14 @@ export default class RestaurantList extends Component {
 		this.fetchRestaurants();
 	}
 
-	fetchRestaurants = ( isRefreshing ) => {
+	fetchRestaurants = ( isRefreshing=false ) => {
+		checkInternetConnection( () => this.fetchRestaurantsFirebaseCall( isRefreshing ), this.fetchRestaurants );
+	}
+
+	fetchRestaurantsFirebaseCall = ( isRefreshing ) => {
 		this.setState( { 
 			loading : isRefreshing ? false : true,
-			isRefreshing : isRefreshing || false
+			isRefreshing : isRefreshing
 		 } );
 		firebase.firestore().collection('restaurants').onSnapshot((documentSnapshot) => {
 			let resultData = [];

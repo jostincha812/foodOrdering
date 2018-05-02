@@ -11,6 +11,7 @@ import CartModal from '../../components/cartModal';
 
 import styles from './styles';
 import { mainStyles } from '../../theme';
+import { checkInternetConnection } from '../../utils';
 import placeholder from '../../assets/placeholder.png';
 
 export default class FoodMenu extends Component {
@@ -49,13 +50,17 @@ export default class FoodMenu extends Component {
 		);
 		});
 	}
+
+	fetchMenu = ( isRefreshing=false ) => {
+		checkInternetConnection( () => this.fetchMenuFirebaseCall( isRefreshing ), this.fetchMenu );
+	}
 		
-	fetchMenu = ( isRefreshing ) => {
+	fetchMenuFirebaseCall = ( isRefreshing ) => {
 		const { restaurantData } = this.state;
 		
 		this.setState( { 
 			loading : isRefreshing ? false : true,
-			isRefreshing : isRefreshing || false
+			isRefreshing : isRefreshing
 		 } );
 		 
 		 firebase.firestore().collection(`restaurants/${restaurantData.Id}/foodMenu`).onSnapshot((documentSnapshot) => {
