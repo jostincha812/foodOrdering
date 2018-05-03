@@ -79,9 +79,9 @@ export default class RestaurantList extends Component {
 			return (
 				<TouchableOpacity
 					onPress={ () => { 
-										this.props.navigation.navigate('FoodMenu',{
-											restaurantData : item
-										}) 
+						this.props.navigation.navigate('FoodMenu',{
+							restaurantData : item
+						}) 
 					}}
 					activeOpacity={ 0.8 }
 					style={ styles.itemContainerStyle }
@@ -95,7 +95,7 @@ export default class RestaurantList extends Component {
 						style={ styles.restaurantImageStyle }
 					/>
 					<View style={ styles.addressContainer } >
-						<Text style={ styles.addressText }>{item.address}</Text>
+						<Text style={ styles.addressText }>{item.address ? item.address : item.description}</Text>
 					</View>
 				</TouchableOpacity>
 			)
