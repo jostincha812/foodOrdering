@@ -3,6 +3,7 @@ import { Modal, View, Text, Image, Alert, TouchableOpacity, Keyboard } from 'rea
 import { Container, Content, Icon, Spinner } from 'native-base';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'react-native-firebase';
+import base64 from 'base-64';
 
 import NavBar from '../navBar';
 import BottomButton from '../bottomButton';
@@ -13,7 +14,7 @@ import ProgressButton from '../progressButton';
 import styles from './styles';
 import placeholder from '../../assets/placeholder.png';
 import { colors } from '../../theme';
-import { checkInternetConnection } from '../../utils';
+import { checkInternetConnection, createMailContent } from '../../utils';
 
 
 const DELIVERY_FEE = 10;
@@ -86,9 +87,30 @@ export default class CartModal extends Component {
   addOrderToFirebase = ( data, restaurantId ) => {
     firebase.firestore().collection(`restaurants/${restaurantId}/orders`).add(data)
     .then( response => {
-      this.setState( { orderPlaced : true, loading : false } );
+      this.sendEmail();
     }, err => {
       console.log('addOrderToFirebase error :: ', err);
+      this.someThingWentWrong();
+    } );
+  }
+
+  sendEmail = () => {
+    const { userName, userEmail, mobile, address, restaurantData, cartData } = this.props;
+    const { email } = restaurantData;
+    const mailContent= createMailContent(userName, userEmail, mobile, address, restaurantData, cartData );
+    fetch('https://api.mailgun.net/v3/sandboxfaec60aa390e4656a4b2dbc18db3ec35.mailgun.org/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + base64.encode("api:key-b86f7c38477601411ef113585ac78114")
+      },
+      body: `from=${userName}<${userEmail}>&to=${email}&subject=New Order&html=${mailContent}`
+    })
+    .then( response => {
+      this.setState( { orderPlaced : true, loading : false } );
+    } )
+    .catch( err => {
+      console.log('Send Email error :::::::::: ', response);
       this.someThingWentWrong();
     } );
   }
@@ -236,7 +258,6 @@ export default class CartModal extends Component {
 						style={ styles.successIcon }
 					/>
 					<Text style={ styles.successText }>Order Success!</Text>
-          <Text>Your order will be delivered within in 45 mins.</Text>
 				</Content>
         <BottomButton
           buttonText="Go to Home"

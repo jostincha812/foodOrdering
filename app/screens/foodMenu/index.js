@@ -30,7 +30,9 @@ export default class FoodMenu extends Component {
 		total : 0,
 		userId : '',
 		mobile : '',
-		address : ''
+		address : '',
+		userEmail : '',
+		userName : ''
 	};
 
 	componentDidMount () {
@@ -63,7 +65,7 @@ export default class FoodMenu extends Component {
 			isRefreshing : isRefreshing
 		 } );
 		 
-		 firebase.firestore().collection(`restaurants/${restaurantData.Id}/foodMenu`).onSnapshot((documentSnapshot) => {
+		 firebase.firestore().collection(`restaurants/${restaurantData.Id}/foodMenu`).where( 'isActive' , '==' , true ).get().then((documentSnapshot) => {
 			let resultData = [];
 			documentSnapshot.forEach((doc) => {
 				let data = doc.data();
@@ -104,6 +106,8 @@ export default class FoodMenu extends Component {
 			this.setState( {
 				mobile : data.mobile_no,
 				address : data.address,
+				userEmail : data.email,
+				userName : data.first_name+' '+data.last_name,
 				loading : false
 			} );
 		});
@@ -182,7 +186,9 @@ export default class FoodMenu extends Component {
 			total,
 			address,
 			mobile,
-			userId
+			userId,
+			userName,
+			userEmail
 		} = this.state;
 				
 		return (
@@ -208,15 +214,6 @@ export default class FoodMenu extends Component {
 						/>
 						<View style={ styles.textContainer }/>
 						<Text style={ styles.restaurantName } numberOfLines={ 1 }>{ restaurantData.name }</Text>
-						{ restaurantData.phone ? 
-							<TouchableOpacity 
-								onPress={ () => { Linking.openURL(`tel:${restaurantData.phone}`); } } 
-								style={ styles.phoneContainer } 
-							>
-								<Icon name="call" style={ styles.phoneIcon } />	
-							</TouchableOpacity>
-						 : <View style={ styles.phoneContainer }/>
-					 }
 					</View>
 					<CustomList 
 						loading={ loading }
@@ -241,6 +238,8 @@ export default class FoodMenu extends Component {
 				address={ address }
 				mobile={ mobile }
 				userId={ userId }
+				userName={ userName }
+				userEmail={ userEmail }
 				restaurantData={ restaurantData }
 				navigation={ this.props.navigation }
 			/>

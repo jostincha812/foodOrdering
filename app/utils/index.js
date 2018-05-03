@@ -25,8 +25,42 @@ const checkInternetConnection = ( successCallbackFn, tryAgainCallbackFn ) => {
   });
 }
 
+const createMailContent = ( userName, userEmail, mobile, address, restaurantData, cartData ) => {
+  const { name } = restaurantData;
+  const orderData = parseOrder( cartData );
+  return(
+    `<div>
+      <p>Hi ${name},</p>
+    </div>
+    <div>
+      <h4>My order is as follows :</h4>
+      <ul>
+      ${orderData}
+      </ul>
+    </div>
+    <div>
+      <h4>My Details : </h4>
+      <ul>
+        <li>Name    : ${userName}</li>
+        <li>Address : ${address}</li>
+        <li>Mobile  : ${mobile}</li>
+      </ul>
+    </div>
+    `
+  )
+}
+
+const parseOrder = ( cartData ) => {
+  let listData = '';
+  cartData.forEach( item => {
+    listData = listData+`<li>${item.name} - ${item.qty}</li>`
+  } );
+  return listData;
+}
+
 export {
   addSpaceBeforeCapital,
   makeCopy,
-  checkInternetConnection
+  checkInternetConnection,
+  createMailContent
 };
