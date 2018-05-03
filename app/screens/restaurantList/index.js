@@ -8,7 +8,7 @@ import CustomList from '../../components/customList';
 import SearchBar from '../../components/searchBar';
 import styles from './styles';
 import { mainStyles } from '../../theme';
-import { makeCopy } from '../../utils';
+import { makeCopy, checkInternetConnection } from '../../utils';
 
 import placeholder from '../../assets/placeholder.png';
 
@@ -29,10 +29,14 @@ export default class RestaurantList extends Component {
 		this.fetchRestaurants();
 	}
 
-	fetchRestaurants = ( isRefreshing ) => {
+	fetchRestaurants = ( isRefreshing=false ) => {
+		checkInternetConnection( () => this.fetchRestaurantsFirebaseCall( isRefreshing ), this.fetchRestaurants );
+	}
+
+	fetchRestaurantsFirebaseCall = ( isRefreshing ) => {
 		this.setState( { 
 			loading : isRefreshing ? false : true,
-			isRefreshing : isRefreshing || false
+			isRefreshing : isRefreshing
 		 } );
 		firebase.firestore().collection('restaurants').onSnapshot((documentSnapshot) => {
 			let resultData = [];
@@ -75,9 +79,9 @@ export default class RestaurantList extends Component {
 			return (
 				<TouchableOpacity
 					onPress={ () => { 
-										this.props.navigation.navigate('FoodMenu',{
-											restaurantData : item
-										}) 
+						this.props.navigation.navigate('FoodMenu',{
+							restaurantData : item
+						}) 
 					}}
 					activeOpacity={ 0.8 }
 					style={ styles.itemContainerStyle }
@@ -91,7 +95,7 @@ export default class RestaurantList extends Component {
 						style={ styles.restaurantImageStyle }
 					/>
 					<View style={ styles.addressContainer } >
-						<Text style={ styles.addressText }>{item.address}</Text>
+						<Text style={ styles.addressText }>{item.address ? item.address : item.description}</Text>
 					</View>
 				</TouchableOpacity>
 			)

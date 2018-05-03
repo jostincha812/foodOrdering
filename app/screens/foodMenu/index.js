@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { RefreshControl, Alert, Image, View, Text, TouchableOpacity, Linking } from 'react-native';
+import { RefreshControl, Alert, Image, View, Text, TouchableOpacity, Linking, AsyncStorage } from 'react-native';
 import { Container, Content, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
 
@@ -11,6 +11,7 @@ import CartModal from '../../components/cartModal';
 
 import styles from './styles';
 import { mainStyles } from '../../theme';
+import { checkInternetConnection } from '../../utils';
 import placeholder from '../../assets/placeholder.png';
 
 export default class FoodMenu extends Component {
@@ -26,7 +27,12 @@ export default class FoodMenu extends Component {
 		data : [],
 		cartData : [],
 		showCart : false,
-		total : 0
+		total : 0,
+		userId : '',
+		mobile : '',
+		address : '',
+		userEmail : '',
+		userName : ''
 	};
 
 	componentDidMount () {
@@ -36,16 +42,30 @@ export default class FoodMenu extends Component {
 			restaurantData : { ...restaurantData }
 		}, this.fetchMenu );
 	}
+
+	someThingWentWrong = () => {
+		this.setState({ loading : false }, () => {
+		Alert.alert('Food Menu','Oops.. Something went wrong please try again.',
+			[
+				{ text : 'OK' }
+			]
+		);
+		});
+	}
+
+	fetchMenu = ( isRefreshing=false ) => {
+		checkInternetConnection( () => this.fetchMenuFirebaseCall( isRefreshing ), this.fetchMenu );
+	}
 		
-	fetchMenu = ( isRefreshing ) => {
+	fetchMenuFirebaseCall = ( isRefreshing ) => {
 		const { restaurantData } = this.state;
 		
 		this.setState( { 
 			loading : isRefreshing ? false : true,
-			isRefreshing : isRefreshing || false
+			isRefreshing : isRefreshing
 		 } );
 		 
-		 firebase.firestore().collection(`restaurants/${restaurantData.Id}/foodMenu`).onSnapshot((documentSnapshot) => {
+		 firebase.firestore().collection(`restaurants/${restaurantData.Id}/foodMenu`).where( 'isActive' , '==' , true ).get().then((documentSnapshot) => {
 			let resultData = [];
 			documentSnapshot.forEach((doc) => {
 				let data = doc.data();
@@ -53,24 +73,51 @@ export default class FoodMenu extends Component {
 				resultData.push(data);
 			});
 
-			this.setState( { 
+			this.setState( {
 				rawData : resultData,
-				data : resultData, 
-				loading : false, 
+				data : resultData,
 				isRefreshing : false
-			 } );
+			}, () => this.getUserId() );
 		}, err => {
-			this.setState( { loading : false } );
-			Alert.alert('Food Menu','Oops.. Something went wrong, Please try again',
-				[
-					{ text : 'OK' }
-				]
-			);
+			console.log("Fetch food menu err :", err);
+			this.someThingWentWrong();
 		});
 
 	}
+
+	getUserId = () => {
+		AsyncStorage.getItem("uid")
+			.then((value) => {
+			this.setState( { userId : value } , () => {
+				this.getUserDetails();
+			} );
+		})
+		.catch(err => {
+			console.log('AsyncStorage get userId error :: ', err);
+			this.someThingWentWrong();
+		});
+	}
 	
-	setCardData = ( foodObj ) => {
+	getUserDetails = () => {
+		const { userId } = this.state;
+		firebase.firestore().collection('users').where( 'userId' , '==' , userId ).get().then((documentSnapshot) => {
+		documentSnapshot.forEach((doc) => {
+			let data = doc.data();
+			this.setState( {
+				mobile : data.mobile_no,
+				address : data.address,
+				userEmail : data.email,
+				userName : data.first_name+' '+data.last_name,
+				loading : false
+			} );
+		});
+		}, err => {
+		console.log('user details get error :: ', err);
+		this.someThingWentWrong();
+		});
+	}
+	
+	setCartData = ( foodObj ) => {
 		const { cartData } = this.state;
 		const { qty } = foodObj;
 		
@@ -117,7 +164,7 @@ export default class FoodMenu extends Component {
 				<View style={ styles.addToCartContainer}>
 					<AddToCartButton 
 						foodData={ item }
-						addToCart={ this.setCardData }
+						addToCart={ this.setCartData }
 					/>
 				</View>
 			</View>
@@ -129,7 +176,20 @@ export default class FoodMenu extends Component {
 	}
 	
 	render() {
-		const { loading, isRefreshing, data, restaurantData, cartData, showCart, total } = this.state;
+		const {
+			loading,
+			isRefreshing,
+			data,
+			restaurantData,
+			cartData,
+			showCart,
+			total,
+			address,
+			mobile,
+			userId,
+			userName,
+			userEmail
+		} = this.state;
 				
 		return (
 			<Container>
@@ -154,15 +214,6 @@ export default class FoodMenu extends Component {
 						/>
 						<View style={ styles.textContainer }/>
 						<Text style={ styles.restaurantName } numberOfLines={ 1 }>{ restaurantData.name }</Text>
-						{ restaurantData.phone ? 
-							<TouchableOpacity 
-								onPress={ () => { Linking.openURL(`tel:${restaurantData.phone}`); } } 
-								style={ styles.phoneContainer } 
-							>
-								<Icon name="call" style={ styles.phoneIcon } />	
-							</TouchableOpacity>
-						 : <View style={ styles.phoneContainer }/>
-					 }
 					</View>
 					<CustomList 
 						loading={ loading }
@@ -184,6 +235,11 @@ export default class FoodMenu extends Component {
 				toggleCart={ this.toggleCart }
 				cartData={ cartData }
 				total={ total }
+				address={ address }
+				mobile={ mobile }
+				userId={ userId }
+				userName={ userName }
+				userEmail={ userEmail }
 				restaurantData={ restaurantData }
 				navigation={ this.props.navigation }
 			/>

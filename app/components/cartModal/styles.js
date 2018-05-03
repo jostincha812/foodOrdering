@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   totalContainer : {
     width : '100%',
-    paddingVertical : 20,
+    paddingTop : 20,
     paddingHorizontal : 10,
     alignItems : 'flex-end',
     ...mainStyles.handleBottomButton
@@ -104,6 +104,35 @@ const styles = StyleSheet.create({
     flex : 1,
     justifyContent : 'center',
     alignItems : 'center'
+  },
+  loader : {
+    flex : 1,
+    flexDirection : 'column',
+    justifyContent : 'center',
+    alignItems : 'center'
+  },
+  toText : {
+    margin : 10
+  },
+  addressContainer : {
+    flexDirection : 'row',
+    justifyContent : 'center',
+    alignItems : 'center',
+    paddingHorizontal : 10
+  },
+  editAddressContainer : {
+    marginLeft : 5
+  },
+  editAddressText : {
+    color : colors.red
+  },
+  editAddressIcon : {
+    fontSize : 20,
+    color : colors.red
+  },
+  addressText : {
+    color : colors.black,
+    textAlign : 'center'
   }
 });
 

@@ -4,6 +4,7 @@ import { TouchableOpacity, Text, View } from 'react-native';
 import CustomTextInput from '../../../../components/customTextInput';
 import ProgressButton from '../../../../components/progressButton';
 import { mainStyles } from '../../../../theme';
+import { checkInternetConnection } from '../../../../utils';
 
 export default class PersonalDetails extends Component {
   state = {
@@ -21,16 +22,18 @@ export default class PersonalDetails extends Component {
   
   onSave = () => {
     if( !this.validateForm() ) return;
-    
+    checkInternetConnection( this.onSaveSuccessfull, this.onSave );
+  };
+
+  onSaveSuccessfull = () => {
     const addressObj = {
       address : this.state.address,
       city : this.state.city,
       state : this.state.state,
       zip : this.state.zip,
     };
-    
     this.props.onSave( addressObj );
-  };
+  }
   
   validateForm = () => {
     const { errors } = this.state;

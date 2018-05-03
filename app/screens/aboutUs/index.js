@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, Text } from 'native-base';
 
+import styles from './styles';
 import NavBar from '../../components/navBar';
 
 export default class AboutUs extends Component {
@@ -16,8 +17,11 @@ export default class AboutUs extends Component {
 					leftIconPress={ () => this.props.navigation.navigate('DrawerOpen') }
 					title="About Us"
 				/>
-				<Content>
-					<Text>AboutUs</Text>
+				<Content style={styles.aboutUsContainer}>
+					<Text>
+						This application is a senior project that is done by Alyamamah students.
+						It aims to make instagram shopping easier for consumers.
+					</Text>
 				</Content>
 			</Container>
 		)

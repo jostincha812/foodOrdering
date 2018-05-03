@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Image, TouchableOpacity, ActivityIndicator, StatusBar  } from 'react-native';
+import { Alert, View, Image, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native';
 import { Container, Content, Button, Text } from 'native-base';
 import firebase from 'react-native-firebase';
 
@@ -9,6 +9,7 @@ import logo from '../../assets/logo.png';
 import ProgressButton from '../../components/progressButton';
 import BottomButton from '../../components/bottomButton';
 import CustomTextInput from '../../components/customTextInput';
+import { checkInternetConnection } from '../../utils';
 
 
 const loginErrorMessages = {
@@ -36,9 +37,11 @@ export default class Login extends Component {
 
 	loginPressed = () => {
 		if ( !this.validateForm() ) return;
-		
-		this.setState( { loading : true } );
+		checkInternetConnection( this.loginFirebaseCall, this.loginPressed );
+	};
 
+	loginFirebaseCall = () => {
+		this.setState( { loading : true } );
 		firebase.auth().signInWithEmailAndPassword( this.state.email, this.state.password ).then( ( data ) => {
 		this.setState( { loading : false } );
 		this.props.navigation.navigate( 'Home' );
@@ -50,7 +53,7 @@ export default class Login extends Component {
 				]
 			);
 		});
-	};
+	}
 	
 	validateForm = () => {
 		let valid = false;
